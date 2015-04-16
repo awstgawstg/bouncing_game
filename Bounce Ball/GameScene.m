@@ -15,8 +15,9 @@
 
 @implementation GameScene
 static const uint32_t ballCategory = 0x1 << 1;
-static const uint32_t edgeCategory = 0x1 << 2;
+static const uint32_t bottomCategory = 0x1 << 2;
 static const uint32_t fingerCategory = 0x1 << 3;
+static const uint32_t edgeCategory = 0x1 << 4;
 int flag = 0;
 CGPoint start;
 NSTimeInterval startTime;
@@ -27,7 +28,7 @@ NSTimeInterval startTime;
 
 
 -(id)initWithSize:(CGSize)size {
-
+    
     if (self = [super initWithSize:size]) {
         
         // show the window range
@@ -36,14 +37,14 @@ NSTimeInterval startTime;
         //make the gravity is 2
         self.physicsWorld.gravity = CGVectorMake(0,-2);
         self.physicsWorld.contactDelegate = self;
-
+        
         
         // initialize the color and the bounce range
         self.backgroundColor = [SKColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
         
         // add edges
         [self addEdge];
-
+        
         //put the four bottoms
         [self addBottom:1];
         [self addBottom:3];
@@ -53,28 +54,33 @@ NSTimeInterval startTime;
         
     }
     return self;
-} 
+}
 
 - (void)addEdge {
     SKNode *edge = [SKNode node];
     edge.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:CGRectMake(self.frame.origin.x,
-                                                                          self.frame.origin.y+10,
+                                                                          self.frame.origin.y,
                                                                           self.frame.size.width,
                                                                           self.frame.size.height*5)];
+    edge.physicsBody.categoryBitMask = edgeCategory;
+    edge.physicsBody.contactTestBitMask = ballCategory;
+    edge.physicsBody.restitution = 0.5;
+    edge.physicsBody.dynamic = NO;
     [self addChild:edge];
 }
 
 - (void)addfinger:(CGPoint) location {
     SKSpriteNode * finger = [SKSpriteNode spriteNodeWithImageNamed:@"download"];
     finger.physicsBody.dynamic = YES;
-    finger.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:finger.size.width * 0.5];
+    finger.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:finger.size.width];
     finger.physicsBody.categoryBitMask = fingerCategory;
     finger.physicsBody.contactTestBitMask = ballCategory;
+    finger.physicsBody.restitution = 0.5;
     finger.position = location;
     [self addChild:finger];
     [finger runAction:
      [SKAction sequence:@[
-                          [SKAction waitForDuration:0.1],
+                          [SKAction waitForDuration:0.01],
                           [SKAction removeFromParent]
                           ]]
      ];
@@ -83,19 +89,25 @@ NSTimeInterval startTime;
 
 - (void)addBottom:(int) x {
     SKSpriteNode * bottom = [SKSpriteNode spriteNodeWithImageNamed:@"1636430"];
-    bottom.position =CGPointMake(x*self.frame.size.width/10,4*self.frame.size.height/70);
-    bottom.physicsBody.categoryBitMask = edgeCategory;
+    bottom.position =CGPointMake(x*self.frame.size.width/10,4*self.frame.size.height/280);
+    bottom.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(self.frame.size.width/5,self.frame.size.height/35)];
+    bottom.physicsBody.dynamic = NO;
+    bottom.physicsBody.collisionBitMask = 1;
+    bottom.physicsBody.categoryBitMask = bottomCategory;
     bottom.physicsBody.contactTestBitMask = ballCategory;
+    bottom.physicsBody.restitution = 0.5;
     [self addChild:bottom];
 }
 
 - (void)addBall:(CGPoint) location {
     // Create ball
-    SKSpriteNode * ball = [SKSpriteNode spriteNodeWithImageNamed:@"rsz_download"];
-    ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.size.width * 4];
-    ball.physicsBody.collisionBitMask = 1;
+    SKSpriteNode * ball = [SKSpriteNode spriteNodeWithImageNamed:@"1"];
+    ball.size = CGSizeMake(self.frame.size.height/20, self.frame.size.height/20);
+    ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.size.width * 0.5];
+    ball.physicsBody.dynamic = YES;
+    //   ball.physicsBody.collisionBitMask = 1;
     ball.physicsBody.categoryBitMask = ballCategory;
-    ball.physicsBody.contactTestBitMask = ballCategory | edgeCategory;
+    ball.physicsBody.contactTestBitMask = ballCategory | bottomCategory | fingerCategory | edgeCategory;
     ball.physicsBody.mass = 0.8;
     ball.physicsBody.restitution = 0.5;
     
@@ -128,15 +140,23 @@ NSTimeInterval startTime;
         firstBody = contact.bodyB;
         secondBody = contact.bodyA;
     }
+    NSLog([NSString stringWithFormat:@"%f", self.frame.size.height]);
+    NSLog(@"first");
+    NSLog( [NSString stringWithFormat:@"%d", firstBody.categoryBitMask]);
+    NSLog(@"second");
+    NSLog( [NSString stringWithFormat:@"%d", secondBody.categoryBitMask]);
     
-    /*if ((firstBody.categoryBitMask & ballCategory) != 0 &&
-        (secondBody.categoryBitMask & edgeCategory) != 0)
+    if ((firstBody.categoryBitMask & ballCategory) != 0 &&
+        (secondBody.categoryBitMask & bottomCategory) != 0)
     {
         NSLog(@"End Edge");
-        SKTransition *reveal = [SKTransition flipVerticalWithDuration:0.5];
-        SKScene * gameOverScene = [[GameOverScene alloc] initWithSize:self.size won:NO];
-        [self.view presentScene:gameOverScene transition: reveal];
-    }*/
+        //NSLog(secondBody.description);
+        /*
+         SKTransition *reveal = [SKTransition flipVerticalWithDuration:0.5];
+         SKScene * gameOverScene = [[GameOverScene alloc] initWithSize:self.size won:NO];
+         [self.view presentScene:gameOverScene transition: reveal];
+         */
+    }
     
     if ((firstBody.categoryBitMask & ballCategory) != 0 &&
         (secondBody.categoryBitMask & fingerCategory) != 0)
@@ -164,9 +184,9 @@ NSTimeInterval startTime;
     }
     if(self.lastflick>1){
         self.lastflick=0;
-    
-     }
+        
     }
+}
 
 
 - (void)update:(NSTimeInterval)currentTime {
@@ -183,7 +203,7 @@ NSTimeInterval startTime;
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-   // NSLog(@"Swipe detected with speed");
+    // NSLog(@"Swipe detected with speed");
     UITouch *touch = [touches anyObject];
     CGPoint location = [touch locationInNode:self];
     // Determine distance from the starting point
@@ -223,7 +243,7 @@ NSTimeInterval startTime;
 
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-   // NSLog(@"oh my lady gaga");
+    // NSLog(@"oh my lady gaga");
     /* Avoid multi-touch gestures (optional) */
     if ([touches count] > 1) {
         return;
@@ -245,7 +265,7 @@ NSTimeInterval startTime;
         CGPoint location = [touch locationInNode:self];
         [self addBall:location];
     }*/
-
+    
 }
 
 
