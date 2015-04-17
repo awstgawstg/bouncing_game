@@ -11,6 +11,7 @@
 		C45130661ADF8B36009BB6D8 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = C45130651ADF8B36009BB6D8 /* 1.png */; };
 		C485FA7F1AD854A200377CB6 /* GameOverScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C485FA7E1AD854A200377CB6 /* GameOverScene.m */; };
 		C485FA811AD872FF00377CB6 /* 1636430.png in Resources */ = {isa = PBXBuildFile; fileRef = C485FA801AD872FF00377CB6 /* 1636430.png */; };
+		C496C1D81AE197C50019ED34 /* reset.png in Resources */ = {isa = PBXBuildFile; fileRef = C496C1D71AE197C50019ED34 /* reset.png */; };
 		C4ED1A351AD77EF600DC1D14 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ED1A341AD77EF600DC1D14 /* main.m */; };
 		C4ED1A381AD77EF600DC1D14 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ED1A371AD77EF600DC1D14 /* AppDelegate.m */; };
 		C4ED1A3B1AD77EF600DC1D14 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ED1A3A1AD77EF600DC1D14 /* GameScene.m */; };
@@ -40,6 +41,7 @@
 		C485FA7D1AD854A200377CB6 /* GameOverScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameOverScene.h; sourceTree = "<group>"; };
 		C485FA7E1AD854A200377CB6 /* GameOverScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameOverScene.m; sourceTree = "<group>"; };
 		C485FA801AD872FF00377CB6 /* 1636430.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1636430.png; sourceTree = "<group>"; };
+		C496C1D71AE197C50019ED34 /* reset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reset.png; sourceTree = "<group>"; };
 		C4ED1A2F1AD77EF600DC1D14 /* Bounce Ball.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bounce Ball.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4ED1A331AD77EF600DC1D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C4ED1A341AD77EF600DC1D14 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 		C4ED1A5F1AD781F400DC1D14 /* SpriteKitSimpleGameResources */ = {
 			isa = PBXGroup;
 			children = (
+				C496C1D71AE197C50019ED34 /* reset.png */,
 				C45130651ADF8B36009BB6D8 /* 1.png */,
 				C424AD8C1ADE160F000C0C5D /* download.png */,
 				C485FA801AD872FF00377CB6 /* 1636430.png */,
@@ -246,6 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4ED1A481AD77EF600DC1D14 /* LaunchScreen.xib in Resources */,
+				C496C1D81AE197C50019ED34 /* reset.png in Resources */,
 				C4ED1A451AD77EF600DC1D14 /* Images.xcassets in Resources */,
 				C45130661ADF8B36009BB6D8 /* 1.png in Resources */,
 				C4ED1A3D1AD77EF600DC1D14 /* GameScene.sks in Resources */,

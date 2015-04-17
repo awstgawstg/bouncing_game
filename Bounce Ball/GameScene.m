@@ -3,34 +3,62 @@
 
 // 1
 @interface GameScene ()<SKPhysicsContactDelegate>
+//initial ball
 @property (nonatomic) SKSpriteNode * ball;
+
+//add time control to calculate the time inorder to add more balls
 @property (nonatomic) NSTimeInterval lastSpawnTimeInterval;
-@property (nonatomic) NSTimeInterval lastflick;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
+
+//store the swipe value with direction and speed
 @property (nonatomic)CGFloat mdx;
 @property (nonatomic)CGFloat mdy;
 @property (nonatomic)CGFloat mspeed;
+
+
 @end
 
 
 @implementation GameScene
+//the time label
+SKLabelNode *myTimeLabel;
+
+
+
+//this is the category for the hit objects, each objects will belong to a category
 static const uint32_t ballCategory = 0x1 << 1;
 static const uint32_t bottomCategory = 0x1 << 2;
 static const uint32_t fingerCategory = 0x1 << 3;
 static const uint32_t edgeCategory = 0x1 << 4;
+
+//check whether the game is a new game or not
 int flag = 0;
+int startgame=1;
 CGPoint start;
+
+//get the start time for each swipe and the beginTime for each game, and the gameover time
 NSTimeInterval startTime;
+NSTimeInterval beginTime;
+NSTimeInterval gameoverTime;
+
+
+
+//define the value for swipe
 #define kMinDistance    10
-#define kMinDuration    0.001
+#define kMinDuration    0.0001
 #define kMinSpeed       100
-#define kMaxSpeed       10000
+#define kMaxSpeed       100000
+
+
+
 
 
 -(id)initWithSize:(CGSize)size {
     
+    
     if (self = [super initWithSize:size]) {
-        
+        flag=0;
+        startgame=1;
         // show the window range
         NSLog(@"Size: %@", NSStringFromCGSize(size));
         
@@ -45,17 +73,31 @@ NSTimeInterval startTime;
         // add edges
         [self addEdge];
         
-        //put the four bottoms
+        //put the five bottoms
         [self addBottom:1];
         [self addBottom:3];
         [self addBottom:5];
         [self addBottom:7];
         [self addBottom:9];
+ 
+      
+        // show the time lable
+        myTimeLabel = [SKLabelNode labelNodeWithFontNamed:@"HelveticaNeue"];
+        myTimeLabel.text = @"00:00:00";
+        myTimeLabel.fontSize = 30;
+        myTimeLabel.position = CGPointMake(self.frame.size.width*10/12,
+                                           self.frame.size.height*16/17);
+        myTimeLabel.fontColor = [SKColor colorWithRed:0 green:0 blue:0 alpha:1.0];
+        myTimeLabel.name = @"myTimeLabel";
         
+        [self addChild:myTimeLabel];
     }
     return self;
 }
 
+
+
+// addedge fuction for add the walls and ceiling
 - (void)addEdge {
     SKNode *edge = [SKNode node];
     edge.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:CGRectMake(self.frame.origin.x,
@@ -69,24 +111,38 @@ NSTimeInterval startTime;
     [self addChild:edge];
 }
 
-- (void)addfinger:(CGPoint) location {
-    SKSpriteNode * finger = [SKSpriteNode spriteNodeWithImageNamed:@"download"];
-    finger.physicsBody.dynamic = YES;
-    finger.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:finger.size.width];
-    finger.physicsBody.categoryBitMask = fingerCategory;
-    finger.physicsBody.contactTestBitMask = ballCategory;
-    finger.physicsBody.restitution = 0.5;
-    finger.position = location;
-    [self addChild:finger];
-    [finger runAction:
-     [SKAction sequence:@[
-                          [SKAction waitForDuration:0.01],
-                          [SKAction removeFromParent]
-                          ]]
-     ];
+
+
+//addfinger with the start point and end point of the swipe and also put 10 fingers in the swipe to make sure will catch the ball
+- (void)addfinger:(CGPoint) location start:(CGPoint)start {
+    
+    //for loop to travel the swipe
+    for (int i = 0; i <= 10; i++){
+        SKSpriteNode * finger = [SKSpriteNode spriteNodeWithImageNamed:@"download"];
+        finger.physicsBody.dynamic = YES;
+        finger.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:finger.size.width];
+        finger.physicsBody.categoryBitMask = fingerCategory;
+        finger.physicsBody.contactTestBitMask = ballCategory;
+        finger.physicsBody.restitution = 0.5;
+        finger.position = CGPointMake(i*location.x/10+(10-i)*start.x/10,i*location.y/10+(10-i)*start.y/10);
+        [self addChild:finger];
+        [finger runAction:
+         [SKAction sequence:@[
+                              [SKAction waitForDuration:0.01],
+                              [SKAction removeFromParent]
+                              ]]
+         ];
+
+
+    }
+    
+    
     
 }
 
+
+
+//add the bottom at the bottom
 - (void)addBottom:(int) x {
     SKSpriteNode * bottom = [SKSpriteNode spriteNodeWithImageNamed:@"1636430"];
     bottom.position =CGPointMake(x*self.frame.size.width/10,4*self.frame.size.height/280);
@@ -99,6 +155,10 @@ NSTimeInterval startTime;
     [self addChild:bottom];
 }
 
+
+
+
+//add ball at the same height but different place
 - (void)addBall:(CGPoint) location {
     // Create ball
     SKSpriteNode * ball = [SKSpriteNode spriteNodeWithImageNamed:@"1"];
@@ -124,6 +184,9 @@ NSTimeInterval startTime;
     [self addChild:ball];
 }
 
+
+
+// to check whether two things are hit each other, if they are the category we want then do the action
 - (void)didBeginContact:(SKPhysicsContact *)contact
 {
     // 1
@@ -140,24 +203,30 @@ NSTimeInterval startTime;
         firstBody = contact.bodyB;
         secondBody = contact.bodyA;
     }
-    NSLog([NSString stringWithFormat:@"%f", self.frame.size.height]);
-    NSLog(@"first");
-    NSLog( [NSString stringWithFormat:@"%d", firstBody.categoryBitMask]);
-    NSLog(@"second");
-    NSLog( [NSString stringWithFormat:@"%d", secondBody.categoryBitMask]);
+    //NSLog([NSString stringWithFormat:@"%f", self.frame.size.height]);
+    //NSLog(@"first");
+    //NSLog( [NSString stringWithFormat:@"%d", firstBody.categoryBitMask]);
+    //NSLog(@"second");
+    //NSLog( [NSString stringWithFormat:@"%d", secondBody.categoryBitMask]);
     
+    
+    
+    //if the two objects are ball and bottom then gameover
     if ((firstBody.categoryBitMask & ballCategory) != 0 &&
         (secondBody.categoryBitMask & bottomCategory) != 0)
     {
         NSLog(@"End Edge");
-        //NSLog(secondBody.description);
-        /*
+        NSLog(secondBody.description);
+        
          SKTransition *reveal = [SKTransition flipVerticalWithDuration:0.5];
-         SKScene * gameOverScene = [[GameOverScene alloc] initWithSize:self.size won:NO];
+         SKScene * gameOverScene = [[GameOverScene alloc] initWithSize:self.size time:gameoverTime];
          [self.view presentScene:gameOverScene transition: reveal];
-         */
+          
+        
     }
     
+    
+    //if the two objects are ball and finger then the ball should move
     if ((firstBody.categoryBitMask & ballCategory) != 0 &&
         (secondBody.categoryBitMask & fingerCategory) != 0)
     {
@@ -168,6 +237,9 @@ NSTimeInterval startTime;
     }
 }
 
+
+//update time
+
 - (void)updateWithTimeSinceLastUpdate:(CFTimeInterval)timeSinceLast {
     CGPoint location = CGPointMake(-1, -1);
     
@@ -177,18 +249,16 @@ NSTimeInterval startTime;
     }
     
     self.lastSpawnTimeInterval += timeSinceLast;
-    self.lastflick+= timeSinceLast;
-    if (self.lastSpawnTimeInterval > 10) {
+    if (self.lastSpawnTimeInterval > 5) {
         self.lastSpawnTimeInterval = 0;
         [self addBall:location];
     }
-    if(self.lastflick>1){
-        self.lastflick=0;
-        
-    }
+    
 }
 
 
+
+//update current time, and also the game over time
 - (void)update:(NSTimeInterval)currentTime {
     // Handle time delta.
     // If we drop below 60fps, we still want everything to move the same distance.
@@ -200,8 +270,19 @@ NSTimeInterval startTime;
     }
     
     [self updateWithTimeSinceLastUpdate:timeSinceLast];
+    if(startgame==1){
+    beginTime=currentTime;
+        startgame=0;
+    }
+    CFGregorianDate elapsedTime  = CFAbsoluteTimeGetGregorianDate((currentTime - beginTime), nil);
+    NSString *formattedDateString = [NSString stringWithFormat:@"%02d:%02d:%02.1f", elapsedTime.hour, elapsedTime.minute, elapsedTime.second];
+    myTimeLabel.text = formattedDateString;
+    gameoverTime=currentTime - beginTime;
 }
 
+
+
+// get touch action and get the swipe data
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     // NSLog(@"Swipe detected with speed");
     UITouch *touch = [touches anyObject];
@@ -228,7 +309,7 @@ NSTimeInterval startTime;
                 dx = dx / magnitude;
                 dy = dy / magnitude;
                 NSLog(@"Swipe detected with speed = %g and direction (%g, %g)",speed, dx, dy);
-                [self addfinger:location];
+                [self addfinger:location start:start];
                 
             }
         }
@@ -240,7 +321,7 @@ NSTimeInterval startTime;
 
 
 
-
+// get the touch began
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     // NSLog(@"oh my lady gaga");
