@@ -16,6 +16,14 @@
         // 1
         self.backgroundColor = [SKColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
         [self addChild: [self startNode]];
+        SKLabelNode *myTimeLabel=[SKLabelNode labelNodeWithFontNamed:@"Times"];
+        NSString * yourtime=@"Welcome To Bounce Ball";
+        myTimeLabel.text = yourtime;
+        myTimeLabel.fontSize = 30;
+        myTimeLabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame)*9/7);
+        myTimeLabel.fontColor = [SKColor colorWithRed:0 green:0 blue:0 alpha:1.0];
+        myTimeLabel.name = @"myTimeLabel";
+        [self addChild:myTimeLabel];
     }
     return self;
 }
@@ -34,17 +42,6 @@
 }
 
 
-
-
-- (SKSpriteNode *)howToPlayNode
-{
-    SKSpriteNode *fireNode = [SKSpriteNode spriteNodeWithImageNamed:@"start"];
-    fireNode.size= CGSizeMake(self.frame.size.width/2, self.frame.size.height/8);
-    fireNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame)*6/10);
-    fireNode.name = @"startNode";//how the node is identified later
-    fireNode.zPosition = 1.0;
-    return fireNode;
-}
 
 
 

@@ -35,6 +35,7 @@ static const uint32_t edgeCategory = 0x1 << 4;
 int flag = 0;
 int startgame=1;
 int backtogame=0;
+
 CGPoint start;
 
 //get the start time for each swipe and the beginTime for each game, and the gameover time
