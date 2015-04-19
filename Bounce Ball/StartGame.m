@@ -59,7 +59,7 @@
          [SKAction runBlock:^{
             // 5
             SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
-            SKScene * myScene = [[GameScene alloc] initWithSize:self.size];
+            SKScene * myScene = [[GameScene alloc] initWithSize:self.size mode:1];
             [self.view presentScene:myScene transition: reveal];
         }        ]];
     }

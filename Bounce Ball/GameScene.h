@@ -9,5 +9,5 @@
 #import <SpriteKit/SpriteKit.h>
 
 @interface GameScene : SKScene
-
+-(id)initWithSize:(CGSize)size mode:(int)gameMode;
 @end

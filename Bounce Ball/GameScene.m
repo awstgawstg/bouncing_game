@@ -34,6 +34,7 @@ static const uint32_t edgeCategory = 0x1 << 4;
 int flag = 0;
 int startgame=1;
 int backtogame=0;
+int mode = -1;
 
 CGPoint start;
 
@@ -43,7 +44,11 @@ NSTimeInterval beginTime;
 NSTimeInterval gameoverTime;
 NSTimeInterval backgroundTime;
 NSTimeInterval nowTime;
-
+SKSpriteNode * bottom1;
+SKSpriteNode * bottom2;
+SKSpriteNode * bottom3;
+SKSpriteNode * bottom4;
+SKSpriteNode * bottom5;
 
 
 
@@ -60,7 +65,9 @@ applicationWillEnterForeground = YES;
 applicationDidBecomeActive = YES;
 
 
--(id)initWithSize:(CGSize)size {
+-(id)initWithSize:(CGSize)size mode:(int)gameMode{
+     mode=gameMode;
+     NSLog([NSString stringWithFormat:@"%d", mode]);
     
     
     [[NSNotificationCenter defaultCenter]
@@ -92,13 +99,19 @@ applicationDidBecomeActive = YES;
         // add edges
         [self addEdge];
         
+        
+        
+        
+        
+        
         //put the five bottoms
-        [self addBottom:1];
-        [self addBottom:3];
-        [self addBottom:5];
-        [self addBottom:7];
-        [self addBottom:9];
- 
+         bottom1=[self addBottom:1];
+         bottom2=[self addBottom:3];
+         bottom3=[self addBottom:5];
+         bottom4=[self addBottom:7];
+         bottom5=[self addBottom:9];
+        
+        
       
         // show the time lable
         myTimeLabel = [SKLabelNode labelNodeWithFontNamed:@"HelveticaNeue"];
@@ -162,7 +175,7 @@ applicationDidBecomeActive = YES;
 
 
 //add the bottom at the bottom
-- (void)addBottom:(int) x {
+- (SKSpriteNode*)addBottom:(int) x {
     SKSpriteNode * bottom = [SKSpriteNode spriteNodeWithImageNamed:@"1636430"];
     bottom.position =CGPointMake(x*self.frame.size.width/10,4*self.frame.size.height/280);
     bottom.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(self.frame.size.width/5,self.frame.size.height/35)];
@@ -172,6 +185,7 @@ applicationDidBecomeActive = YES;
     bottom.physicsBody.contactTestBitMask = ballCategory;
     bottom.physicsBody.restitution = 0.5;
     [self addChild:bottom];
+    return bottom;
 }
 
 
@@ -257,8 +271,7 @@ applicationDidBecomeActive = YES;
     
     //if both objects are ball and the mode is combined
     if ((firstBody.categoryBitMask & ballCategory) != 0 &&
-        (secondBody.categoryBitMask & ballCategory) != 0) &&
-        (mode == 1))
+        (secondBody.categoryBitMask & ballCategory) != 0)
     {
         [secondBody.node removeFromParent];
         [firstBody.node removeFromParent];
@@ -278,10 +291,31 @@ applicationDidBecomeActive = YES;
     }
     
     self.lastSpawnTimeInterval += timeSinceLast;
-    if (self.lastSpawnTimeInterval > 5) {
+    if (self.lastSpawnTimeInterval > 10) {
+        
         self.lastSpawnTimeInterval = 0;
         [self addBall:location scale:0.5];
     }
+    
+    if (self.lastSpawnTimeInterval > 5) {
+    if(mode==1){
+        int choose= arc4random() % 4;
+        NSLog([NSString stringWithFormat:@"choose value @%d", choose]);
+        if(choose==1){
+            CGPoint  newPosiion=CGPointMake(self.frame.size.width/10,4*self.frame.size.height/15);
+            [bottom1 runAction:[SKAction moveTo:newPosiion duration:3.0]];}
+        if(choose==2){
+            CGPoint  newPosiion=CGPointMake(3*self.frame.size.width/10,4*self.frame.size.height/15);
+            [bottom2 runAction:[SKAction moveTo:newPosiion duration:3.0]];}
+        if(choose==3){
+            CGPoint  newPosiion=CGPointMake(5*self.frame.size.width/10,4*self.frame.size.height/15);
+            [bottom3 runAction:[SKAction moveTo:newPosiion duration:3.0]];}
+        if(choose==4){
+            CGPoint  newPosiion=CGPointMake(7*self.frame.size.width/10,4*self.frame.size.height/15);
+            [bottom4 runAction:[SKAction moveTo:newPosiion duration:3.0]];}
+    }
+    }
+
     
 }
 
