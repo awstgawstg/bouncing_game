@@ -20,11 +20,16 @@ NSTimeInterval bestTime;
       
             message = @"Game Over!";
         
+        //get the stored best score
+        NSTimeInterval savedScore = [[NSUserDefaults standardUserDefaults] floatForKey:@"bestScore"];
         
+        if (bestTime < savedScore){
+            bestTime = savedScore;
+        }
         
         // check whether gameovertime will be the best time
-        if(bestTime<gameoverTime){
-            bestTime=gameoverTime;
+        if(bestTime < gameoverTime){
+            bestTime = gameoverTime;
         }
         
         
@@ -57,6 +62,10 @@ NSTimeInterval bestTime;
         
         [self addChild:myTimeLabel];
         [self addChild:myTimeLabel1];
+        
+        //store best score
+        [[NSUserDefaults standardUserDefaults] setFloat:bestTime forKey:@"bestScore"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     
         //add the game over
         SKLabelNode *label = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
