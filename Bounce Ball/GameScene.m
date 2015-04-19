@@ -4,7 +4,6 @@
 
 @interface GameScene ()<SKPhysicsContactDelegate>
 //initial ball
-@property (nonatomic) SKSpriteNode * ball;
 
 //add time control to calculate the time inorder to add more balls
 @property (nonatomic) NSTimeInterval lastSpawnTimeInterval;
@@ -179,11 +178,11 @@ applicationDidBecomeActive = YES;
 
 
 //add ball at the same height but different place
-- (void)addBall:(CGPoint) location {
+- (void)addBall:(CGPoint) location scale:(float) scale{
     // Create ball
     SKSpriteNode * ball = [SKSpriteNode spriteNodeWithImageNamed:@"1"];
     ball.size = CGSizeMake(self.frame.size.height/20, self.frame.size.height/20);
-    ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.size.width * 0.5];
+    ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.size.width * scale];
     ball.physicsBody.dynamic = YES;
     //   ball.physicsBody.collisionBitMask = 1;
     ball.physicsBody.categoryBitMask = ballCategory;
@@ -255,6 +254,16 @@ applicationDidBecomeActive = YES;
         [firstBody applyImpulse:CGVectorMake(self.mdx*self.speed*3, self.mdy*self.speed*3)];
         [secondBody.node removeFromParent];
     }
+    
+    //if both objects are ball and the mode is combined
+    if ((firstBody.categoryBitMask & ballCategory) != 0 &&
+        (secondBody.categoryBitMask & ballCategory) != 0) &&
+        (mode == 1))
+    {
+        [secondBody.node removeFromParent];
+        [firstBody.node removeFromParent];
+
+    }
 }
 
 
@@ -264,14 +273,14 @@ applicationDidBecomeActive = YES;
     CGPoint location = CGPointMake(-1, -1);
     
     if(flag==0){
-        [self addBall:location];
+        [self addBall:location scale:0.5];
         flag=1;
     }
     
     self.lastSpawnTimeInterval += timeSinceLast;
     if (self.lastSpawnTimeInterval > 5) {
         self.lastSpawnTimeInterval = 0;
-        [self addBall:location];
+        [self addBall:location scale:0.5];
     }
     
 }
