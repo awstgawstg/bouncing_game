@@ -195,13 +195,13 @@ applicationDidBecomeActive = YES;
 - (void)addBall:(CGPoint) location scale:(float) scale{
     // Create ball
     SKSpriteNode * ball = [SKSpriteNode spriteNodeWithImageNamed:@"1"];
-    ball.size = CGSizeMake(self.frame.size.height/20, self.frame.size.height/20);
-    ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.size.width * scale];
+    ball.size = CGSizeMake(self.frame.size.height/20 * scale, self.frame.size.height/20 * scale);
+    ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.size.width * 0.5 * scale];
     ball.physicsBody.dynamic = YES;
     //   ball.physicsBody.collisionBitMask = 1;
     ball.physicsBody.categoryBitMask = ballCategory;
     ball.physicsBody.contactTestBitMask = ballCategory | bottomCategory | fingerCategory | edgeCategory;
-    ball.physicsBody.mass = 0.8;
+    ball.physicsBody.mass = 0.8*scale;
     ball.physicsBody.restitution = 0.5;
     
     // Create the ball slightly off-screen along the right edge,
@@ -273,9 +273,10 @@ applicationDidBecomeActive = YES;
     if ((firstBody.categoryBitMask & ballCategory) != 0 &&
         (secondBody.categoryBitMask & ballCategory) != 0)
     {
+        float scale = firstBody.mass/0.8*1.5;
         [secondBody.node removeFromParent];
         [firstBody.node removeFromParent];
-
+        [self addBall:contact.contactPoint scale:scale];
     }
 }
 
@@ -286,7 +287,7 @@ applicationDidBecomeActive = YES;
     CGPoint location = CGPointMake(-1, -1);
     
     if(flag==0){
-        [self addBall:location scale:0.5];
+        [self addBall:location scale:1];
         flag=1;
     }
     
@@ -294,7 +295,7 @@ applicationDidBecomeActive = YES;
     if (self.lastSpawnTimeInterval > 10) {
         
         self.lastSpawnTimeInterval = 0;
-        [self addBall:location scale:0.5];
+        [self addBall:location scale:1];
     }
     
     if (self.lastSpawnTimeInterval > 5) {
