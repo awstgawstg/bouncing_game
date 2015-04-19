@@ -1,7 +1,7 @@
 #import "GameScene.h"
 #import "GameOverScene.h"
 
-// 1
+
 @interface GameScene ()<SKPhysicsContactDelegate>
 //initial ball
 @property (nonatomic) SKSpriteNode * ball;
@@ -34,12 +34,16 @@ static const uint32_t edgeCategory = 0x1 << 4;
 //check whether the game is a new game or not
 int flag = 0;
 int startgame=1;
+int backtogame=0;
 CGPoint start;
 
 //get the start time for each swipe and the beginTime for each game, and the gameover time
 NSTimeInterval startTime;
 NSTimeInterval beginTime;
 NSTimeInterval gameoverTime;
+NSTimeInterval backgroundTime;
+NSTimeInterval nowTime;
+
 
 
 
@@ -50,10 +54,25 @@ NSTimeInterval gameoverTime;
 #define kMaxSpeed       100000
 
 
-
+applicationWillResignActive = NO;
+applicationDidEnterBackground = YES;
+applicationWillEnterForeground = YES;
+applicationDidBecomeActive = YES;
 
 
 -(id)initWithSize:(CGSize)size {
+    
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(applicationDidEnterBackground)
+     name:UIApplicationDidEnterBackgroundNotification
+     object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(yourUpdateMethodGoesHere:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
     
     
     if (self = [super initWithSize:size]) {
@@ -262,10 +281,16 @@ NSTimeInterval gameoverTime;
 - (void)update:(NSTimeInterval)currentTime {
     // Handle time delta.
     // If we drop below 60fps, we still want everything to move the same distance.
+    if(backtogame==1){
+        backtogame=0;
+        beginTime=currentTime-backgroundTime+beginTime;
+        
+    }
+    nowTime=currentTime;
     CFTimeInterval timeSinceLast = currentTime - self.lastUpdateTimeInterval;
     self.lastUpdateTimeInterval = currentTime;
     if (timeSinceLast > 1) { // more than a second since last update
-        timeSinceLast = 1.0 / 60.0;
+        timeSinceLast = 1.0 / 1000.0;
         self.lastUpdateTimeInterval = currentTime;
     }
     
@@ -278,6 +303,8 @@ NSTimeInterval gameoverTime;
     NSString *formattedDateString = [NSString stringWithFormat:@"%02d:%02d:%02.1f", elapsedTime.hour, elapsedTime.minute, elapsedTime.second];
     myTimeLabel.text = formattedDateString;
     gameoverTime=currentTime - beginTime;
+    
+    
 }
 
 
@@ -346,6 +373,23 @@ NSTimeInterval gameoverTime;
         CGPoint location = [touch locationInNode:self];
         [self addBall:location];
     }*/
+    
+}
+
+
+- (void) applicationDidEnterBackground{
+    NSLog(@"Enter to background");
+    NSLog([NSString stringWithFormat:@"%f", nowTime]);
+    backgroundTime=nowTime;
+    
+    //self.scene.view.paused  =YES;
+}
+
+
+- (void) yourUpdateMethodGoesHere:(NSNotification *) note {
+    NSLog(@"back to the game");
+    backtogame=1;
+
     
 }
 
