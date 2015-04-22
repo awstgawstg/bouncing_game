@@ -1,16 +1,20 @@
 #import "GameOverScene.h"
 #import "GameScene.h"
+#import "StartGame.h"
 
 
  
 @implementation GameOverScene
 NSTimeInterval bestTime;
+int type=0;
 
  // game over scence will get the best time and also pass the gameoverTime
--(id)initWithSize:(CGSize)size time:(NSTimeInterval)gameoverTime {
+-(id)initWithSize:(CGSize)size time:(NSTimeInterval)gameoverTime mode:(int)gamemode{
     if (self = [super initWithSize:size]) {
-        
+        [self runAction:[SKAction playSoundFileNamed:@"gameover.mp3" waitForCompletion:YES]];
+
         // 1
+        type=gamemode;
         self.backgroundColor = [SKColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
  
         // 2
@@ -73,6 +77,7 @@ NSTimeInterval bestTime;
         label.position = CGPointMake(self.size.width/2, self.size.height/2);
         [self addChild:label];
         [self addChild: [self fireButtonNode]];
+        [self addChild: [self startNode]];
 
     }
     return self;
@@ -91,6 +96,18 @@ NSTimeInterval bestTime;
 }
 
 
+- (SKSpriteNode *)startNode
+{
+    SKSpriteNode *fireNode = [SKSpriteNode spriteNodeWithImageNamed:@"start"];
+    fireNode.size= CGSizeMake(self.frame.size.width/2, self.frame.size.height/8);
+    fireNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame)*3/10);
+    fireNode.name = @"startNode";//how the node is identified later
+    fireNode.zPosition = 1.0;
+    return fireNode;
+}
+
+
+
 
 //get the touch button action
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -101,15 +118,37 @@ NSTimeInterval bestTime;
     
     //if fire button touched, bring the rain
     if ([node.name isEqualToString:@"fireButtonNode"]) {
+        [self runAction:[SKAction playSoundFileNamed:@"button.mp3" waitForCompletion:YES]];
+
         [self runAction:
          
          [SKAction runBlock:^{
             // 5
             SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
-            SKScene * myScene = [[GameScene alloc] initWithSize:self.size mode:1];
+            SKScene * myScene = [[GameScene alloc] initWithSize:self.size mode:type];
            [self.view presentScene:myScene transition: reveal];
         }        ]];
     }
+    
+    
+    
+    if ([node.name isEqualToString:@"startNode"]) {
+        [self runAction:[SKAction playSoundFileNamed:@"button.mp3" waitForCompletion:YES]];
+
+        [self runAction:
+         
+         [SKAction runBlock:^{
+            // 5
+            SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
+            SKScene * myScene = [[StartGame alloc] initWithSize:self.size];
+            [self.view presentScene:myScene transition: reveal];
+        }        ]];
+    }
+
+    
+    
+    
+    
 }
 
 
