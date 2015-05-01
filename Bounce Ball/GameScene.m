@@ -23,6 +23,8 @@
 @implementation GameScene
 //the time label
 SKLabelNode *myTimeLabel;
+SKLabelNode *guide;
+SKLabelNode *guide2;
 
 
 
@@ -59,7 +61,9 @@ SKSpriteNode * bottom2;
 SKSpriteNode * bottom3;
 SKSpriteNode * bottom4;
 SKSpriteNode * bottom5;
-
+int mode1FirstGame ;
+int mode2FirstGame ;
+int mode3FirstGame ;
 
 
 //define the value for swipe
@@ -113,17 +117,17 @@ applicationDidBecomeActive = YES;
     
     
     
-    int mode1FirstGame = [[NSUserDefaults standardUserDefaults] floatForKey:@"mode1FirstGame"];
-    int mode2FirstGame = [[NSUserDefaults standardUserDefaults] floatForKey:@"mode2FirstGame"];
-    int mode3FirstGame = [[NSUserDefaults standardUserDefaults] floatForKey:@"mode3FirstGame"];
-    
-    
+  //  int mode1FirstGame = [[NSUserDefaults standardUserDefaults] floatForKey:@"mode1FirstGame"];
+    //int mode2FirstGame = [[NSUserDefaults standardUserDefaults] floatForKey:@"mode2FirstGame"];
+   // int mode3FirstGame = [[NSUserDefaults standardUserDefaults] floatForKey:@"mode3FirstGame"];
+   
+ 
     if (self = [super initWithSize:size]) {
         
         
         // show the window range
        // NSLog(@"Size: %@", NSStringFromCGSize(size));
-        
+       
             if(mode==0){
                 self.physicsWorld.gravity = CGVectorMake(0,-1);
             }
@@ -156,10 +160,28 @@ applicationDidBecomeActive = YES;
                                            self.frame.size.height*16/17);
             myTimeLabel.fontColor = [SKColor colorWithRed:0 green:0 blue:0 alpha:1.0];
             myTimeLabel.name = @"myTimeLabel";
-        
             [self addChild:myTimeLabel];
+        
+        
+        
+        
+        if(mode1FirstGame==0){
+        NSString * yourtime=@"Swipe the Ball Up";
+        guide= [SKLabelNode labelNodeWithFontNamed:@"Times"];
+        guide.text = yourtime;
+        guide.fontSize = 30;
+        guide.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame)*9/7);
+        guide.fontColor = [SKColor colorWithRed:0 green:0 blue:0 alpha:1.0];
+        guide.name = @"myTimeLabel";
+            [self addChild:guide];}
+        else{
+            [guide removeFromParent];
+            [guide2 removeFromParent];
+        }
+
     }
     return self;
+    
 }
 
 
@@ -233,7 +255,15 @@ applicationDidBecomeActive = YES;
     SKSpriteNode * ball = [SKSpriteNode spriteNodeWithImageNamed:@"1"];
     ball.size = CGSizeMake(self.frame.size.height/20 * scale, self.frame.size.height/20 * scale);
     ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.size.width * 0.44];
+    if(mode1FirstGame==0){
+        myTimeLabel.text = @"00:00:00";
+        ball.physicsBody.dynamic = NO;
+   
+
+}
+    else{
     ball.physicsBody.dynamic = YES;
+    }
     //   ball.physicsBody.collisionBitMask = 1;
     ball.physicsBody.categoryBitMask = ballCategory;
     ball.physicsBody.contactTestBitMask = ballCategory | bottomCategory | fingerCategory | edgeCategory;
@@ -261,7 +291,7 @@ applicationDidBecomeActive = YES;
 {
     // 1
     
-    //NSLog(@"Hit");
+    NSLog(@"Hit");
     SKPhysicsBody *firstBody, *secondBody;
     
     if (contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask)
@@ -294,6 +324,7 @@ applicationDidBecomeActive = YES;
     }
     if ((firstBody.categoryBitMask & ballCategory) == 0 ||
         (secondBody.categoryBitMask & fingerCategory) == 0){
+        
     [self runAction:[SKAction playSoundFileNamed:@"throw.mp3" waitForCompletion:YES]];
     }
     
@@ -301,6 +332,20 @@ applicationDidBecomeActive = YES;
     if ((firstBody.categoryBitMask & ballCategory) != 0 &&
         (secondBody.categoryBitMask & fingerCategory) != 0)
     {
+        if(mode1FirstGame==0){
+        firstBody.dynamic=YES;
+        guide.text=@"Good Job!";
+        [guide runAction:[SKAction fadeOutWithDuration:1.5]];
+        guide2= [SKLabelNode labelNodeWithFontNamed:@"Times"];
+        guide2.fontSize = 30;
+        guide2.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+        guide2.fontColor = [SKColor colorWithRed:0 green:0 blue:0 alpha:1.0];
+        [self addChild:guide2];
+        guide2.text=@"Keep the balls up!";
+        [guide2 runAction:[SKAction fadeOutWithDuration:1.5]];
+
+        mode1FirstGame=1;
+    }
       //  NSLog(@"End Finger");
         firstBody.velocity = self.physicsBody.velocity;
         //SKSpriteNode *first = firstBody.node;
@@ -462,6 +507,9 @@ applicationDidBecomeActive = YES;
     if(startgame==1){
     beginTime=currentTime;
         startgame=0;
+    }
+    if(mode1FirstGame==0){
+        beginTime=currentTime;
     }
     CFGregorianDate elapsedTime  = CFAbsoluteTimeGetGregorianDate((currentTime - beginTime), nil);
     NSString *formattedDateString = [NSString stringWithFormat:@"%02d:%02d:%02.1f", elapsedTime.hour, elapsedTime.minute, elapsedTime.second];

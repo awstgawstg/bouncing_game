@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C40C9E641AEAF11C009D7C53 /* Anime-iPhoneWallpapers-OnePiece2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C40C9E631AEAF11C009D7C53 /* Anime-iPhoneWallpapers-OnePiece2.jpg */; };
 		C424AD8D1ADE160F000C0C5D /* download.png in Resources */ = {isa = PBXBuildFile; fileRef = C424AD8C1ADE160F000C0C5D /* download.png */; };
 		C45130661ADF8B36009BB6D8 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = C45130651ADF8B36009BB6D8 /* 1.png */; };
 		C45FFABE1AE4AD6700A94A3A /* throw.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C45FFABD1AE4AD6700A94A3A /* throw.mp3 */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C40C9E631AEAF11C009D7C53 /* Anime-iPhoneWallpapers-OnePiece2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Anime-iPhoneWallpapers-OnePiece2.jpg"; sourceTree = "<group>"; };
 		C424AD8C1ADE160F000C0C5D /* download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = download.png; sourceTree = "<group>"; };
 		C45130651ADF8B36009BB6D8 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		C45FFABD1AE4AD6700A94A3A /* throw.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = throw.mp3; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 		C4ED1A5F1AD781F400DC1D14 /* SpriteKitSimpleGameResources */ = {
 			isa = PBXGroup;
 			children = (
+				C40C9E631AEAF11C009D7C53 /* Anime-iPhoneWallpapers-OnePiece2.jpg */,
 				C45FFAC11AE4B19000A94A3A /* gameover.mp3 */,
 				C45FFABF1AE4AF6B00A94A3A /* button.mp3 */,
 				C45FFABD1AE4AD6700A94A3A /* throw.mp3 */,
@@ -268,6 +271,7 @@
 				C4ED1A481AD77EF600DC1D14 /* LaunchScreen.xib in Resources */,
 				C496C1D81AE197C50019ED34 /* reset.png in Resources */,
 				C45FFABE1AE4AD6700A94A3A /* throw.mp3 in Resources */,
+				C40C9E641AEAF11C009D7C53 /* Anime-iPhoneWallpapers-OnePiece2.jpg in Resources */,
 				C496C1DD1AE34AD10019ED34 /* start.png in Resources */,
 				C45FFAC01AE4AF6B00A94A3A /* button.mp3 in Resources */,
 				C4ED1A451AD77EF600DC1D14 /* Images.xcassets in Resources */,

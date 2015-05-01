@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bounce Ball/GameScene.m"
-            timestampString = "451370258.97606"
+            timestampString = "451604346.893014"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "331"
-            endingLineNumber = "331"
+            startingLineNumber = "373"
+            endingLineNumber = "373"
             landmarkName = "-didBeginContact:"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bounce Ball/GameScene.m"
-            timestampString = "451370258.97606"
+            timestampString = "451604346.893014"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "365"
-            endingLineNumber = "365"
+            startingLineNumber = "407"
+            endingLineNumber = "407"
             landmarkName = "-updateWithTimeSinceLastUpdate:"
             landmarkType = "5">
          </BreakpointContent>
