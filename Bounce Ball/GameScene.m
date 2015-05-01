@@ -52,6 +52,7 @@ CGPoint start;
 
 //get the start time for each swipe and the beginTime for each game, and the gameover time
 NSTimeInterval startTime;
+NSTimeInterval resumeTime;
 NSTimeInterval beginTime;
 NSTimeInterval gameoverTime;
 NSTimeInterval backgroundTime;
@@ -99,7 +100,7 @@ applicationDidBecomeActive = YES;
     }
     
     // NSLog([NSString stringWithFormat:@"%d", mode]);
-    
+    //self.scene.paused = YES;
     
     
     
@@ -199,6 +200,21 @@ applicationDidBecomeActive = YES;
     edge.physicsBody.dynamic = NO;
     [self addChild:edge];
 }
+
+
+
+
+
+- (SKSpriteNode *)Resume
+{
+    SKSpriteNode *fireNode = [SKSpriteNode spriteNodeWithImageNamed:@"play-i"];
+    fireNode.size= CGSizeMake(self.frame.size.width/3, self.frame.size.width/3);
+    fireNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    fireNode.name = @"Resume";//how the node is identified later
+    fireNode.zPosition = 1.0;
+    return fireNode;
+}
+
 
 
 
@@ -487,16 +503,29 @@ applicationDidBecomeActive = YES;
 }
 
 
-
+int aa;
+SKSpriteNode * tmp;
 //update current time, and also the game over time
 - (void)update:(NSTimeInterval)currentTime {
     // Handle time delta.
     // If we drop below 60fps, we still want everything to move the same distance.
+   
     if(backtogame==1){
-        backtogame=0;
-        beginTime=currentTime-backgroundTime+beginTime;
-        
+        self.scene.paused = YES;
+        currentTime= backgroundTime;
+        if(aa==0){
+            tmp=[self Resume];
+            [self addChild: tmp];
+             aa=1;
+        }
     }
+    if(aa==2){
+        NSLog(@"awoijgioasdjfmkasdfmk");
+        [tmp removeFromParent];
+        aa=0;
+        beginTime=currentTime-resumeTime+beginTime;
+    }
+    
     nowTime=currentTime;
     CFTimeInterval timeSinceLast = currentTime - self.lastUpdateTimeInterval;
     self.lastUpdateTimeInterval = currentTime;
@@ -506,6 +535,7 @@ applicationDidBecomeActive = YES;
     }
     
     [self updateWithTimeSinceLastUpdate:timeSinceLast];
+
     if(startgame==1){
     beginTime=currentTime;
         startgame=0;
@@ -525,6 +555,17 @@ applicationDidBecomeActive = YES;
 
 // get touch action and get the swipe data
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint location = [touch locationInNode:self];
+    SKNode *node = [self nodeAtPoint:location];
+
+    if ([node.name isEqualToString:@"Resume"]) {
+        self.scene.paused = NO;
+        backtogame=0;
+        aa=2;
+        resumeTime=nowTime;
+    }
+    
     if ([touches count] <3){
 
     // NSLog(@"Swipe detected with speed");
@@ -575,13 +616,17 @@ applicationDidBecomeActive = YES;
 // get the touch began
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-  
+    
     // NSLog(@"oh my lady gaga");
+    
     /* Avoid multi-touch gestures (optional) */
-    if ([touches count] <3) {
-        
+    
+    
     UITouch *touch = [touches anyObject];
     CGPoint location = [touch locationInNode:self];
+    SKNode *node = [self nodeAtPoint:location];
+    if ([touches count] <3) {
+   
     // Save start location and time
     start = location;
     startTime = touch.timestamp;
@@ -590,7 +635,8 @@ applicationDidBecomeActive = YES;
      NSLog(@"to many begin");}
     
     
-    
+   
+
     
     
     /* Called when a touch begins */
@@ -614,7 +660,6 @@ applicationDidBecomeActive = YES;
 
 - (void) yourUpdateMethodGoesHere:(NSNotification *) note {
     NSLog(@"back to the game");
-    self.scene.view.paused = YES;
     backtogame=1;
 
     
