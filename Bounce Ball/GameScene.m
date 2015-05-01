@@ -291,7 +291,7 @@ applicationDidBecomeActive = YES;
 {
     // 1
     
-    NSLog(@"Hit");
+    //NSLog(@"Hit");
     SKPhysicsBody *firstBody, *secondBody;
     
     if (contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask)
@@ -413,9 +413,11 @@ applicationDidBecomeActive = YES;
     self.bottomTime+=timeSinceLast;
     self.lastSpawnTimeInterval += timeSinceLast;
     if (self.lastSpawnTimeInterval > newBallTime) {
+        if(mode1FirstGame!=0){
         moveBottom=0;
         self.lastSpawnTimeInterval = 0;
         [self addBall:location scale:1];
+        }
     }
     
     
@@ -612,6 +614,7 @@ applicationDidBecomeActive = YES;
 
 - (void) yourUpdateMethodGoesHere:(NSNotification *) note {
     NSLog(@"back to the game");
+    self.scene.view.paused = YES;
     backtogame=1;
 
     

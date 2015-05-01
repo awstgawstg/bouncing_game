@@ -23,15 +23,43 @@ int type=0;
             message = @"Game Over!";
         
         //get the stored best score
-        NSTimeInterval savedScore = [[NSUserDefaults standardUserDefaults] floatForKey:@"bestScore"];
+        NSTimeInterval savedScore1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"bestScore1"];
+        NSTimeInterval savedScore2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"bestScore2"];
+        NSTimeInterval savedScore3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"bestScore3"];
         
-        if (bestTime < savedScore){
-            bestTime = savedScore;
+        switch (gamemode)
+        {
+            case 0:
+                bestTime = savedScore1;
+                break;
+            case 1:
+                bestTime = savedScore2;
+                break;
+            case 2:
+                bestTime = savedScore3;
+                break;
+            default:
+                break;
         }
         
         // check whether gameovertime will be the best time
         if(bestTime < gameoverTime){
             bestTime = gameoverTime;
+        }
+        
+        switch (gamemode)
+        {
+            case 0:
+                savedScore1 = bestTime;
+                break;
+            case 1:
+                savedScore2 = bestTime;
+                break;
+            case 2:
+                savedScore3 = bestTime;
+                break;
+            default:
+                break;
         }
         
         
@@ -66,7 +94,9 @@ int type=0;
         [self addChild:myTimeLabel1];
         
         //store best score
-        [[NSUserDefaults standardUserDefaults] setFloat:bestTime forKey:@"bestScore"];
+        [[NSUserDefaults standardUserDefaults] setFloat:savedScore1 forKey:@"bestScore1"];
+        [[NSUserDefaults standardUserDefaults] setFloat:savedScore2 forKey:@"bestScore2"];
+        [[NSUserDefaults standardUserDefaults] setFloat:savedScore3 forKey:@"bestScore3"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     
         //add the game over
